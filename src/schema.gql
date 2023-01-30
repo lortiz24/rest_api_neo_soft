@@ -1,0 +1,30 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Parametro {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+type Query {
+  parametros: [Parametro!]!
+  parametro(id: Int!): Parametro!
+}
+
+type Mutation {
+  createParametro(createParametroInput: CreateParametroInput!): Parametro!
+  updateParametro(updateParametroInput: UpdateParametroInput!): Parametro!
+  removeParametro(id: Int!): Parametro!
+}
+
+input CreateParametroInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateParametroInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
+}
