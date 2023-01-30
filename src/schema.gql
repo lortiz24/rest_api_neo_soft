@@ -19,12 +19,10 @@ type Mutation {
 }
 
 input CreateParametroInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  nombre: String!
 }
 
 input UpdateParametroInput {
-  """Example field (placeholder)"""
-  exampleField: Int
-  id: Int!
+  nombre: String
+  id: ID!
 }

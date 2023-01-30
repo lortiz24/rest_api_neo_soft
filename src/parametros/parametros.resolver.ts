@@ -39,4 +39,7 @@ export class ParametrosResolver {
   removeParametro(@Args('id', { type: () => Int }) id: number) {
     return this.parametrosService.remove(id);
   }
+
+
+  //todo: beforeInser and beforeUpdate
 }
