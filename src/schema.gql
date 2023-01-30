@@ -3,8 +3,8 @@
 # ------------------------------------------------------
 
 type Parametro {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  id: ID!
+  nombre: String!
 }
 
 type Query {
