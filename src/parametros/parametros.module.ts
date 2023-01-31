@@ -10,4 +10,4 @@ import { Parametro } from './entities/parametro.entity';
   ],
   providers: [ParametrosResolver, ParametrosService],
 })
-export class ParametrosModule {}
+export class ParametrosModule { }

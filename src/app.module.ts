@@ -6,6 +6,7 @@ import { ApolloServerPluginLandingPageLocalDefault } from 'apollo-server-core';
 import { ParametrosModule } from './parametros/parametros.module';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ValorParametroModule } from './valor-parametro/valor-parametro.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       synchronize: process.env.STATE === 'dev' ? true : false,
       autoLoadEntities: true,
     }),
+    ValorParametroModule,
   ],
   controllers: [],
   providers: [],

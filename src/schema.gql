@@ -7,15 +7,30 @@ type Parametro {
   nombre: String!
 }
 
+type ValorParametro {
+  id: ID!
+  nombre: String!
+}
+
 type Query {
-  parametros: [Parametro!]!
-  parametro(id: Int!): Parametro!
+  getParametros(paginationArgs: PaginationArgs!): [Parametro!]!
+  getParametro(id: ID!): Parametro!
+  getValorParametros: [ValorParametro!]!
+  getValorParametro(id: ID!): ValorParametro!
+}
+
+input PaginationArgs {
+  limit: Float
+  offset: Float
 }
 
 type Mutation {
   createParametro(createParametroInput: CreateParametroInput!): Parametro!
   updateParametro(updateParametroInput: UpdateParametroInput!): Parametro!
   removeParametro(id: Int!): Parametro!
+  createValorParametro(createValorParametroInput: CreateValorParametroInput!): ValorParametro!
+  updateValorParametro(updateValorParametroInput: UpdateValorParametroInput!): ValorParametro!
+  removeValorParametro(id: Int!): ValorParametro!
 }
 
 input CreateParametroInput {
@@ -25,4 +40,13 @@ input CreateParametroInput {
 input UpdateParametroInput {
   nombre: String
   id: ID!
+}
+
+input CreateValorParametroInput {
+  nombre: String!
+}
+
+input UpdateValorParametroInput {
+  nombre: String
+  id: Int!
 }
