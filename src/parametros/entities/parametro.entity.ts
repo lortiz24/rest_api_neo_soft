@@ -1,6 +1,7 @@
-import { PrimaryGeneratedColumn, Column } from 'typeorm';
+import { PrimaryGeneratedColumn, Column, Entity } from 'typeorm';
 import { ObjectType, Field, ID } from '@nestjs/graphql';
 
+@Entity({ name: 'parametros' })
 @ObjectType()
 export class Parametro {
   @PrimaryGeneratedColumn('uuid')

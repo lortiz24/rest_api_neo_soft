@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { CreateParametroInput } from './dto/create-parametro.input';
 import { UpdateParametroInput } from './dto/update-parametro.input';
 import { Parametro } from './entities/parametro.entity';
-import { Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class ParametrosService {
@@ -11,16 +11,15 @@ export class ParametrosService {
     @InjectRepository(Parametro)
     private readonly parametroRepository: Repository<Parametro>
   ) { }
-  async create(createParametroInput: CreateParametroInput) {
-    console.log(createParametroInput)
+  async create(createParametroInput: CreateParametroInput):Promise<Parametro> {
     const newParametro = this.parametroRepository.create(createParametroInput)
     console.log(newParametro,'fefefe')
     await this.parametroRepository.save(newParametro)
-    return createParametroInput;
+    return newParametro;
   }
 
   findAll() {
-    return `This action returns all parametros`;
+    return this.parametroRepository.find();
   }
 
   findOne(id: number) {

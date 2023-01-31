@@ -11,7 +11,7 @@ export class ParametrosResolver {
   @Mutation(() => Parametro)
   createParametro(
     @Args('createParametroInput') createParametroInput: CreateParametroInput,
-  ) {
+  ): Promise<Parametro> {
     return this.parametrosService.create(createParametroInput);
   }
 
