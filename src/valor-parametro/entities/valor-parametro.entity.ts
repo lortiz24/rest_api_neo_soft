@@ -3,7 +3,6 @@ import { ObjectType, Field, ID } from '@nestjs/graphql';
 import { Parametro } from 'src/parametros/entities/parametro.entity';
 
 
-// @Unique('mis_unicas',['nombre'])
 @Entity({ name: 'valor_apametro' })
 @ObjectType()
 export class ValorParametro {
@@ -18,12 +17,11 @@ export class ValorParametro {
 
   @ManyToOne(
     () => Parametro,
-    (parametro) => parametro.id,
-
+    (parametro) => parametro.valoresParametros,
   )
   parametro: Parametro;
 
-  
+
   @Column('boolean', { nullable: true, default: false })
   @Field(() => Boolean)
   deleted: boolean;

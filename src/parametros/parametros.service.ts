@@ -12,28 +12,36 @@ export class ParametrosService {
     @InjectRepository(Parametro)
     private readonly parametroRepository: Repository<Parametro>,
     @InjectRepository(ValorParametro)
-    private readonly productImageRepository: Repository<ValorParametro>
+    private readonly valorParametroRepository: Repository<ValorParametro>
   ) { }
-  async create(createParametroInput: CreateParametroInput): Promise<Parametro> {
+  async create({ valoresParametro, ...createParametroInput }: CreateParametroInput): Promise<Parametro> {
 
-    const newParametro = this.parametroRepository.create(createParametroInput)
+    const newParametro = this.parametroRepository.create({
+      ...createParametroInput,
+      valoresParametros: valoresParametro.map((valorParametro) => this.valorParametroRepository.create({ nombre: valorParametro }))
+    })
 
     await this.parametroRepository.save(newParametro)
 
     return newParametro;
   }
 
-  findAll(paginationArgs: PaginationArgs) {
+  async findAll(paginationArgs: PaginationArgs) {
     const { limit, offset } = paginationArgs;
-
-    return this.parametroRepository.find({
+    const parametros = await this.parametroRepository.find({
       take: limit,
       skip: offset,
+      relations: {
+        valoresParametros: true
+      },
       where: { deleted: false }
     });
+    console.log(parametros)
+    return parametros;
   }
 
   async findOne(id: string) {
+    //todo: buscar por nombre
     const parametro = await this.parametroRepository.findOneBy({ id, deleted: false });
 
     if (!parametro) throw new NotFoundException(`Parametro with id ${id} not found`)
@@ -51,8 +59,11 @@ export class ParametrosService {
 
   async remove(id: string) {
     const parametro = await this.findOne(id);
+
     parametro.deleted = true;
+
     await this.parametroRepository.save(parametro)
+
     return parametro;
   }
 }

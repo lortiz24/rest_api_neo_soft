@@ -5,6 +5,7 @@
 type Parametro {
   id: ID!
   nombre: String!
+  valoresParametros: [ValorParametro!]
   deleted: Boolean!
 }
 
