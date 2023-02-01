@@ -7,6 +7,7 @@ import { ParametrosModule } from './parametros/parametros.module';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ValorParametroModule } from './valor-parametro/valor-parametro.module';
+import { CommonModule } from './common/common.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { ValorParametroModule } from './valor-parametro/valor-parametro.module';
       autoLoadEntities: true,
     }),
     ValorParametroModule,
+    CommonModule,
   ],
   controllers: [],
   providers: [],

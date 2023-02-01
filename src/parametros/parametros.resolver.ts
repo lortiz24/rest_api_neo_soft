@@ -3,8 +3,8 @@ import { ParametrosService } from './parametros.service';
 import { Parametro } from './entities/parametro.entity';
 import { CreateParametroInput } from './dto/inputs/create-parametro.input';
 import { UpdateParametroInput } from './dto/inputs/update-parametro.input';
-import { PaginationArgs } from './dto/args/pagination.args';
 import { ParseUUIDPipe } from '@nestjs/common';
+import { PaginationArgs } from 'src/common/dto/args/pagination.args';
 
 @Resolver(() => Parametro)
 export class ParametrosResolver {
@@ -20,13 +20,15 @@ export class ParametrosResolver {
 
   @Query(() => [Parametro], { name: 'getParametros' })
   async findAll(
-    @Args('paginationArgs') paginationArgs: PaginationArgs
-  ) {
+    @Args() paginationArgs: PaginationArgs
+  ): Promise<Parametro[]> {
     return this.parametrosService.findAll(paginationArgs);
   }
 
   @Query(() => Parametro, { name: 'getParametro' })
-  async findOne(@Args('id', { type: () => ID }, ParseUUIDPipe) id: string): Promise<Parametro> {
+  async findOne(
+    @Args('id', { type: () => ID }, ParseUUIDPipe) id: string
+  ): Promise<Parametro> {
     return this.parametrosService.findOne(id);
   }
 
@@ -45,6 +47,4 @@ export class ParametrosResolver {
     return this.parametrosService.remove(id);
   }
 
-
-  //todo: beforeInser and beforeUpdate
 }

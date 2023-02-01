@@ -12,6 +12,10 @@ export class Parametro {
   @Field(() => String)
   nombre: string;
 
+  @Column('boolean', { nullable: true, default: false })
+  @Field(() => Boolean)
+  deleted: boolean;
+
   @BeforeInsert()
   nombreToLowerCaseCreate() {
     this.nombre = this.nombre.toLowerCase()

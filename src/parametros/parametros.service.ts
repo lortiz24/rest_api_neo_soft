@@ -1,11 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { PaginationArgs } from 'src/common/dto/args/pagination.args';
 import { Repository } from 'typeorm';
-import { PaginationArgs } from './dto/args/pagination.args';
 import { CreateParametroInput } from './dto/inputs/create-parametro.input';
 import { UpdateParametroInput } from './dto/inputs/update-parametro.input';
 import { Parametro } from './entities/parametro.entity';
-
 @Injectable()
 export class ParametrosService {
   constructor(
@@ -19,23 +18,27 @@ export class ParametrosService {
   }
 
   findAll(paginationArgs: PaginationArgs) {
-    const { limit = 10, offset = 0 } = paginationArgs;
+    const { limit, offset } = paginationArgs;
     return this.parametroRepository.find({
       take: limit,
       skip: offset,
     });
   }
 
-  findOne(id: string) {
-    return this.parametroRepository.findOneBy({ id });
-  }
-
-  update(id: string, updateParametroInput: UpdateParametroInput) {
-    const parametro = this.parametroRepository.preload(updateParametroInput)
+  async findOne(id: string) {
+    const parametro = await this.parametroRepository.findOneBy({ id });
 
     if (!parametro) throw new NotFoundException(`Parametro with id ${id} not found`)
 
     return parametro;
+  }
+
+  async update(id: string, updateParametroInput: UpdateParametroInput) {
+    const parametro = await this.parametroRepository.preload(updateParametroInput)
+
+    if (!parametro) throw new NotFoundException(`Parametro with id ${id} not found`)
+
+    return this.parametroRepository.save(parametro);
   }
 
   remove(id: number) {
