@@ -27,7 +27,7 @@ export class ParametrosResolver {
 
   @Query(() => Parametro, { name: 'getParametro' })
   async findOne(
-    @Args('id', { type: () => ID }, ParseUUIDPipe) id: string
+    @Args('id', { type: () => String }) id: string
   ): Promise<Parametro> {
     return this.parametrosService.findOne(id);
   }

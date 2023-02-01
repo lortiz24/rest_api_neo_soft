@@ -3,7 +3,7 @@ import { ObjectType, Field, ID } from '@nestjs/graphql';
 import { Parametro } from 'src/parametros/entities/parametro.entity';
 
 
-@Entity({ name: 'valor_apametro' })
+@Entity({ name: 'valor_parametro' })
 @ObjectType()
 export class ValorParametro {
   @PrimaryGeneratedColumn('uuid')

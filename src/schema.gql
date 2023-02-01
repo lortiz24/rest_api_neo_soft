@@ -17,7 +17,7 @@ type ValorParametro {
 
 type Query {
   getParametros(limit: Int = 10, offset: Int = 0): [Parametro!]!
-  getParametro(id: ID!): Parametro!
+  getParametro(id: String!): Parametro!
   getValorParametros(limit: Int = 10, offset: Int = 0): [ValorParametro!]!
   getValorParametro(id: ID!): ValorParametro!
 }

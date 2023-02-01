@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException, InternalServerErrorException, BadRequestException, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { isUUID } from 'class-validator';
 import { PaginationArgs } from 'src/common/dto/args/pagination.args';
 import { ValorParametro } from 'src/valor-parametro/entities/valor-parametro.entity';
 import { Repository } from 'typeorm';
@@ -44,13 +45,29 @@ export class ParametrosService {
     return parametros;
   }
 
-  async findOne(id: string) {
-    //todo: buscar por nombre
-    const parametro = await this.parametroRepository.findOneBy({ id, deleted: false });
+  async findOne(term: string) {
+    try {
+      let parametro: Parametro;
 
-    if (!parametro) throw new NotFoundException(`Parametro with id ${id} not found`)
+      if (isUUID(term)) {
+        parametro = await this.parametroRepository.findOneBy({ id: term });
+      } else {
+        const queryBuilder = this.parametroRepository.createQueryBuilder('parm')
+        parametro = await queryBuilder
+          .where('UPPER(parm.nombre) =:nombre', {
+            nombre: term.toUpperCase(),
+          })
+          .leftJoinAndSelect('parm.valoresParametros', 'valorP')
+          .getOne();
+      }
 
-    return parametro;
+      if (!parametro) throw new NotFoundException('No se encontraron resultados');
+
+      return parametro;
+    } catch (error) {
+      this.handleDbExceptions(error);
+    }
+
   }
 
   async update(id: string, { valoresParametro, ...updateParametroInput }: UpdateParametroInput) {
@@ -81,6 +98,8 @@ export class ParametrosService {
   handleDbExceptions(error: any) {
     if (error.code === '23505')
       throw new BadRequestException(error.detail);
+    if (error.status == '404')
+      throw new NotFoundException(error.detail);
     this.logger.error(`${error} - ${error.code}`)
     throw new InternalServerErrorException('Inexpected error, check server logs')
   }
