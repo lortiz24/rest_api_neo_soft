@@ -1,5 +1,5 @@
 import { InputType, Field, } from '@nestjs/graphql';
-import { IsString, MinLength } from 'class-validator';
+import { IsOptional, IsString, MinLength } from 'class-validator';
 
 @InputType()
 export class CreateParametroInput {
@@ -8,4 +8,8 @@ export class CreateParametroInput {
   @MinLength(1)
   @Field(() => String)
   nombre: string;
+
+  @IsOptional()
+  @Field(() => [String], { nullable: true })
+  valoresParametro?: string[];
 }

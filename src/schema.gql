@@ -11,30 +11,33 @@ type Parametro {
 type ValorParametro {
   id: ID!
   nombre: String!
+  deleted: Boolean!
 }
 
 type Query {
   getParametros(limit: Int = 10, offset: Int = 0): [Parametro!]!
   getParametro(id: ID!): Parametro!
-  getValorParametros: [ValorParametro!]!
+  getValorParametros(limit: Int = 10, offset: Int = 0): [ValorParametro!]!
   getValorParametro(id: ID!): ValorParametro!
 }
 
 type Mutation {
   createParametro(createParametroInput: CreateParametroInput!): Parametro!
   updateParametro(updateParametroInput: UpdateParametroInput!): Parametro!
-  removeParametro(id: Int!): Parametro!
-  createValorParametro(createValorParametroInput: CreateValorParametroInput!): ValorParametro!
+  removeParametro(id: ID!): Parametro!
+  createValorParametro(createValorParametroInput: CreateValorParametroInput!, idParametro: String!): ValorParametro!
   updateValorParametro(updateValorParametroInput: UpdateValorParametroInput!): ValorParametro!
-  removeValorParametro(id: Int!): ValorParametro!
+  removeValorParametro(id: ID!): ValorParametro!
 }
 
 input CreateParametroInput {
   nombre: String!
+  valoresParametro: [String!]
 }
 
 input UpdateParametroInput {
   nombre: String
+  valoresParametro: [String!]
   id: ID!
 }
 
@@ -44,5 +47,5 @@ input CreateValorParametroInput {
 
 input UpdateValorParametroInput {
   nombre: String
-  id: Int!
+  id: ID!
 }
