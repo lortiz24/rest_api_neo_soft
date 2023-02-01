@@ -1,4 +1,4 @@
-import { PrimaryGeneratedColumn, Column, BeforeInsert, Entity, BeforeUpdate, Unique, ManyToOne } from 'typeorm';
+import { PrimaryGeneratedColumn, Column, BeforeInsert, Entity, BeforeUpdate, ManyToOne } from 'typeorm';
 import { ObjectType, Field, ID } from '@nestjs/graphql';
 import { Parametro } from 'src/parametros/entities/parametro.entity';
 

@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Args, Int, ID } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, ID } from '@nestjs/graphql';
 import { ValorParametroService } from './valor-parametro.service';
 import { ValorParametro } from './entities/valor-parametro.entity';
 import { CreateValorParametroInput } from './dto/inputs/create-valor-parametro.input';
@@ -20,7 +20,7 @@ export class ValorParametroResolver {
     @Args('idParametro', ParseUUIDPipe) idParametro: string
   ): Promise<ValorParametro> {
     const parametro = await this.parametrosService.findOne(idParametro);
-    
+
     return this.valorParametroService.create(parametro, createValorParametroInput);
   }
 

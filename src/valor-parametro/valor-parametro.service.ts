@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException, InternalServerErrorException, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PaginationArgs } from 'src/common/dto/args/pagination.args';
 import { Parametro } from 'src/parametros/entities/parametro.entity';
@@ -9,31 +9,38 @@ import { ValorParametro } from './entities/valor-parametro.entity';
 
 @Injectable()
 export class ValorParametroService {
+  private readonly logger = new Logger('ValorParametroService')
+
   constructor(
     @InjectRepository(ValorParametro)
-    private readonly valorParametroRepository: Repository<ValorParametro>,
-    @InjectRepository(Parametro)
-    private readonly parametroRepository: Repository<Parametro>
+    private readonly valorParametroRepository: Repository<ValorParametro>
   ) { }
   async create(parametro: Parametro, createValorParametroInput: CreateValorParametroInput) {
 
-    const newValorParametro = this.valorParametroRepository.create(createValorParametroInput)
+    try {
+      const newValorParametro = this.valorParametroRepository.create(createValorParametroInput)
 
-    newValorParametro.parametro = parametro;
+      newValorParametro.parametro = parametro;
 
-    await this.valorParametroRepository.save(newValorParametro)
+      await this.valorParametroRepository.save(newValorParametro)
 
-    return newValorParametro;
+      return newValorParametro;
+    } catch (error) {
+      this.handleDbExceptions(error)
+    }
   }
 
   findAll(paginationArgs: PaginationArgs) {
-    const { limit, offset } = paginationArgs;
-
-    return this.valorParametroRepository.find({
-      take: limit,
-      skip: offset,
-      where: { deleted: false }
-    });
+    try {
+      const { limit, offset } = paginationArgs;
+      return this.valorParametroRepository.find({
+        take: limit,
+        skip: offset,
+        where: { deleted: false }
+      });
+    } catch (error) {
+      this.handleDbExceptions(error);
+    }
   }
 
   async findOne(id: string): Promise<ValorParametro> {
@@ -46,15 +53,32 @@ export class ValorParametroService {
   }
 
   async update(id: string, updateValorParametroInput: UpdateValorParametroInput) {
-    const valorParametro = await this.valorParametroRepository.preload(updateValorParametroInput)
+    try {
+      const valorParametro = await this.valorParametroRepository.preload(updateValorParametroInput)
 
-    if (!valorParametro) throw new NotFoundException(`Parametro with id ${id} not found`)
+      if (!valorParametro) throw new NotFoundException(`Parametro with id ${id} not found`)
 
-    return this.valorParametroRepository.save(valorParametro);
+      const valorParametroUpdated = await this.valorParametroRepository.save(valorParametro);
+
+      return valorParametroUpdated;
+    } catch (error) {
+      this.handleDbExceptions(error);
+    }
   }
 
   async remove(id: string) {
-    const valorParametro = this.findOne(id)
-    return valorParametro;
+    try {
+      const valorParametro = await this.findOne(id);
+      valorParametro.deleted = true;
+      return valorParametro;
+    } catch (error) {
+      this.handleDbExceptions(error);
+    }
+  }
+  handleDbExceptions(error: any) {
+    if (error.code === '23505')
+      throw new BadRequestException(error.detail);
+    this.logger.error(`${error} - ${error.code}`)
+    throw new InternalServerErrorException('Inexpected error, check server logs')
   }
 }
