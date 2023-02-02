@@ -10,7 +10,7 @@ export class Parametro {
   @Field(() => ID)
   id: string;
 
-  @Column('varchar', { unique: true })
+  @Column('varchar')
   @Field(() => String)
   nombre: string;
 

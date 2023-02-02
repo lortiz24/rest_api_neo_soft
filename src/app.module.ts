@@ -8,6 +8,7 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ValorParametroModule } from './valor-parametro/valor-parametro.module';
 import { CommonModule } from './common/common.module';
+import { UsuariosModule } from './usuarios/usuarios.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { CommonModule } from './common/common.module';
     }),
     ValorParametroModule,
     CommonModule,
+    UsuariosModule,
   ],
   controllers: [],
   providers: [],
