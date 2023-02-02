@@ -47,7 +47,7 @@ export class ValorParametroResolver {
 
   @Mutation(() => ValorParametro)
   async removeValorParametro(
-    @Args('id', { type: () => ID }) id: string
+    @Args('id', { type: () => ID },ParseUUIDPipe) id: string
   ): Promise<ValorParametro> {
     return this.valorParametroService.remove(id);
   }

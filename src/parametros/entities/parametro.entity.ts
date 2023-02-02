@@ -10,7 +10,7 @@ export class Parametro {
   @Field(() => ID)
   id: string;
 
-  @Column('varchar')
+  @Column('varchar', { unique: true })
   @Field(() => String)
   nombre: string;
 
@@ -22,9 +22,7 @@ export class Parametro {
   @Field(() => [ValorParametro], { nullable: true })
   valoresParametros?: ValorParametro[]
 
-  @Column('boolean', { nullable: true, default: false })
-  @Field(() => Boolean)
-  deleted: boolean;
+
 
 
 

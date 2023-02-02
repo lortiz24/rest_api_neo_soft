@@ -50,12 +50,20 @@ export class Usuario {
   @Field(() => String)
   email: string;
 
+  @Column({
+    type: 'text',
+    array: true,
+    default: ['user']
+  })
+  @Field(() => [String])
+  roles: string[]
+
+
   @Column('varchar')
   @Field(() => String)
   password: string;
 
-
-  @Column('boolean', { nullable: true, default: false })
   @Field(() => Boolean)
-  deleted: boolean;
+  isActive: boolean;
+
 }

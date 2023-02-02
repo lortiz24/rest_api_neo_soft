@@ -43,7 +43,7 @@ export class ParametrosResolver {
   }
 
   @Mutation(() => Parametro)
-  removeParametro(@Args('id', { type: () => ID }) id: string) {
+  removeParametro(@Args('id', { type: () => ID },ParseUUIDPipe) id: string) {
     return this.parametrosService.remove(id);
   }
 

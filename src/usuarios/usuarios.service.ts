@@ -1,59 +1,82 @@
 import { BadRequestException, Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { SignupInput } from 'src/auth/dto/inputs';
+import { HelperServices } from 'src/common/helpers/handled-error.helper';
 import { Repository } from 'typeorm';
 import { CreateUsuarioInput } from './dto/create-usuario.input';
 import { UpdateUsuarioInput } from './dto/update-usuario.input';
 import { Usuario } from './entities/usuario.entity';
+import * as bcrypt from 'bcryptjs';
 
 @Injectable()
 export class UsuariosService {
   private readonly logger = new Logger('UsuariosService')
+  private readonly HelperServices = new HelperServices('UsuariosService')
 
 
   constructor(
     @InjectRepository(Usuario)
     private readonly usuarioRepository: Repository<Usuario>
   ) { }
-  async create(createUsuarioInput: CreateUsuarioInput): Promise<Usuario> {
+  async create(signupInput: SignupInput): Promise<Usuario> {
 
     try {
-      const newUsuario = this.usuarioRepository.create({
-        ...createUsuarioInput,
-      })
 
-      await this.usuarioRepository.save(newUsuario)
+      const newUser = this.usuarioRepository.create({
+        ...signupInput,
+        password: bcrypt.hashSync(signupInput.password, 10)
+      });
 
-      return newUsuario;
-      
+      return await this.usuarioRepository.save(newUser);
+
     } catch (error) {
-      this.handleDbExceptions(error);
+      this.HelperServices.handleDbExceptions(error);
+    }
+
+  }
+
+  async findAll(): Promise<Usuario[]> {
+    try {
+      return [];
+    } catch (error) {
+      this.HelperServices.handleDbExceptions(error);
     }
   }
 
-  findAll() {
-    return `This action returns all usuarios`;
+
+  async findOneByEmail(email: string): Promise<Usuario> {
+    try {
+      return await this.usuarioRepository.findOneByOrFail({ email });
+    } catch (error) {
+      throw new NotFoundException(`${email} not found`);
+      // this.handleDBErrors({
+      //   code: 'error-001',
+      //   detail: `${ email } not found`
+      // });
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} usuario`;
+  async findOneById(id: string): Promise<Usuario> {
+    try {
+      return await this.usuarioRepository.findOneByOrFail({ id });
+    } catch (error) {
+      throw new NotFoundException(`${id} not found`);
+    }
   }
 
   update(id: string, updateUsuarioInput: UpdateUsuarioInput) {
-    return `This action updates a #${id} usuario`;
+    try {
+      return `This action updates a #${id} usuario`;
+    } catch (error) {
+      this.HelperServices.handleDbExceptions(error);
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} usuario`;
+  block(id: string) {
+    try {
+      throw new Error('No implemenado');
+    } catch (error) {
+      this.HelperServices.handleDbExceptions(error)
+    }
   }
-
-  handleDbExceptions(error: any) {
-    if (error.code === '23505')
-      throw new BadRequestException(error.detail);
-    if (error.status == '404')
-      throw new NotFoundException(error.detail);
-    this.logger.error(`${error} - ${error.code}`)
-    throw new InternalServerErrorException('Inexpected error, check server logs')
-  }
-
-
 }

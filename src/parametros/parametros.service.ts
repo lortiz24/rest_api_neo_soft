@@ -2,6 +2,7 @@ import { Injectable, NotFoundException, InternalServerErrorException, BadRequest
 import { InjectRepository } from '@nestjs/typeorm';
 import { isUUID } from 'class-validator';
 import { PaginationArgs } from 'src/common/dto/args/pagination.args';
+import { HelperServices } from 'src/common/helpers/handled-error.helper';
 import { ValorParametro } from 'src/valor-parametro/entities/valor-parametro.entity';
 import { Repository } from 'typeorm';
 import { CreateParametroInput } from './dto/inputs/create-parametro.input';
@@ -9,7 +10,9 @@ import { UpdateParametroInput } from './dto/inputs/update-parametro.input';
 import { Parametro } from './entities/parametro.entity';
 @Injectable()
 export class ParametrosService {
-  private readonly logger = new Logger('ValorParametroService')
+  private readonly logger = new Logger('ParametrosService')
+  private readonly HelperServices = new HelperServices('ParametrosService')
+
   constructor(
     @InjectRepository(Parametro)
     private readonly parametroRepository: Repository<Parametro>,
@@ -21,28 +24,32 @@ export class ParametrosService {
     try {
       const newParametro = this.parametroRepository.create({
         ...createParametroInput,
-        valoresParametros: valoresParametro.map((valorParametro) => this.valorParametroRepository.create({ nombre: valorParametro }))
+        valoresParametros: valoresParametro?.map((valorParametro) => this.valorParametroRepository.create({ nombre: valorParametro }))
       })
 
       await this.parametroRepository.save(newParametro)
 
       return newParametro;
     } catch (error) {
-      this.handleDbExceptions(error);
+      this.HelperServices.handleDbExceptions(error)
     }
   }
 
   async findAll(paginationArgs: PaginationArgs) {
-    const { limit, offset } = paginationArgs;
-    const parametros = await this.parametroRepository.find({
-      take: limit,
-      skip: offset,
-      relations: {
-        valoresParametros: true
-      },
-      where: { deleted: false }
-    });
-    return parametros;
+    try {
+      const { limit, offset } = paginationArgs;
+      const parametros = await this.parametroRepository.find({
+        take: limit,
+        skip: offset,
+        relations: {
+          valoresParametros: true
+        }
+
+      });
+      return parametros;
+    } catch (error) {
+      this.HelperServices.handleDbExceptions(error);
+    }
   }
 
   async findOne(term: string) {
@@ -65,7 +72,7 @@ export class ParametrosService {
 
       return parametro;
     } catch (error) {
-      this.handleDbExceptions(error);
+      this.HelperServices.handleDbExceptions(error)
     }
 
   }
@@ -76,31 +83,26 @@ export class ParametrosService {
 
       if (!parametro) throw new NotFoundException(`Parametro with id ${id} not found`)
       //todo: update valores parametro
-      // if (valoresParametro) {
-      //   parametro.valoresParametros = valoresParametro.map((valorParametro) => this.valorParametroRepository.create({ nombre: valorParametro }))
-      // }
+      if (valoresParametro.length > 0) {
+        parametro.valoresParametros = [...parametro.valoresParametros, ...valoresParametro.map((valorParametro) => this.valorParametroRepository.create({ nombre: valorParametro }))]
+      }
       const parametroUpdate = await this.parametroRepository.save(parametro);
       return parametroUpdate;
     } catch (error) {
-      this.handleDbExceptions(error);
+      this.HelperServices.handleDbExceptions(error)
     }
   }
 
   async remove(id: string) {
-    const parametro = await this.findOne(id);
+    try {
+      const parametro = await this.findOne(id);
 
-    parametro.deleted = true;
+      await this.parametroRepository.remove(parametro)
 
-    await this.parametroRepository.save(parametro)
-
-    return parametro;
+      return parametro;
+    } catch (error) {
+      this.HelperServices.handleDbExceptions(error)
+    }
   }
-  handleDbExceptions(error: any) {
-    if (error.code === '23505')
-      throw new BadRequestException(error.detail);
-    if (error.status == '404')
-      throw new NotFoundException(error.detail);
-    this.logger.error(`${error} - ${error.code}`)
-    throw new InternalServerErrorException('Inexpected error, check server logs')
-  }
+
 }
