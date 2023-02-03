@@ -9,18 +9,38 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ValorParametroModule } from './valor-parametro/valor-parametro.module';
 import { CommonModule } from './common/common.module';
 import { UsuariosModule } from './usuarios/usuarios.module';
+import { AuthModule } from './auth/auth.module';
+import { JwtService } from '@nestjs/jwt';
 
 @Module({
   imports: [
-    ParametrosModule,
     ConfigModule.forRoot(),
-    GraphQLModule.forRoot<ApolloDriverConfig>({
+    GraphQLModule.forRootAsync({
       driver: ApolloDriver,
-      debug: false,
-      playground: false,
-      plugins: [ApolloServerPluginLandingPageLocalDefault],
-      autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+      imports: [AuthModule],
+      useFactory: async (jwtService: JwtService) => ({
+        playground: false,
+        autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+        plugins: [
+          ApolloServerPluginLandingPageLocalDefault
+        ],
+        context({ req }) {
+          // const token = req.headers.authorization?.replace('Bearer ','');
+          // if ( !token ) throw Error('Token needed');
+
+          // const payload = jwtService.decode( token );
+          // if ( !payload ) throw Error('Token not valid');
+
+        }
+      })
     }),
+    /*  GraphQLModule.forRoot<ApolloDriverConfig>({
+       driver: ApolloDriver,
+       debug: false,
+       playground: false,
+       plugins: [ApolloServerPluginLandingPageLocalDefault],
+       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+     }), */
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.DB_HOST,
@@ -31,11 +51,13 @@ import { UsuariosModule } from './usuarios/usuarios.module';
       synchronize: process.env.STATE === 'dev' ? true : false,
       autoLoadEntities: true,
     }),
+    ParametrosModule,
     ValorParametroModule,
     CommonModule,
     UsuariosModule,
+    AuthModule
   ],
   controllers: [],
   providers: [],
 })
-export class AppModule {}
+export class AppModule { }
