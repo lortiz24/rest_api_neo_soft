@@ -98,7 +98,7 @@ export class ParametrosService {
       const parametro = await this.findOne(id);
 
       await this.parametroRepository.remove(parametro)
-
+      parametro.id = id
       return parametro;
     } catch (error) {
       this.HelperServices.handleDbExceptions(error)

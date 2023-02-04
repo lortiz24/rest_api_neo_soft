@@ -9,13 +9,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ValorParametroModule } from './valor-parametro/valor-parametro.module';
 import { CommonModule } from './common/common.module';
 import { UsuariosModule } from './usuarios/usuarios.module';
-import { AuthModule } from './auth/auth.module';
-import { JwtService } from '@nestjs/jwt';
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
-    GraphQLModule.forRootAsync({
+    /* GraphQLModule.forRootAsync({
       driver: ApolloDriver,
       imports: [AuthModule],
       useFactory: async (jwtService: JwtService) => ({
@@ -33,14 +31,14 @@ import { JwtService } from '@nestjs/jwt';
 
         }
       })
+    }), */
+    GraphQLModule.forRoot<ApolloDriverConfig>({
+      driver: ApolloDriver,
+      debug: false,
+      playground: false,
+      plugins: [ApolloServerPluginLandingPageLocalDefault],
+      autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
     }),
-    /*  GraphQLModule.forRoot<ApolloDriverConfig>({
-       driver: ApolloDriver,
-       debug: false,
-       playground: false,
-       plugins: [ApolloServerPluginLandingPageLocalDefault],
-       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
-     }), */
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.DB_HOST,
@@ -54,8 +52,7 @@ import { JwtService } from '@nestjs/jwt';
     ParametrosModule,
     ValorParametroModule,
     CommonModule,
-    UsuariosModule,
-    AuthModule
+    UsuariosModule
   ],
   controllers: [],
   providers: [],

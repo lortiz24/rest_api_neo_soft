@@ -1,6 +1,5 @@
 import { BadRequestException, Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { SignupInput } from 'src/auth/dto/inputs';
 import { HelperServices } from 'src/common/helpers/handled-error.helper';
 import { Repository } from 'typeorm';
 import { CreateUsuarioInput } from './dto/create-usuario.input';
@@ -18,7 +17,7 @@ export class UsuariosService {
     @InjectRepository(Usuario)
     private readonly usuarioRepository: Repository<Usuario>
   ) { }
-  async create(signupInput: SignupInput): Promise<Usuario> {
+  /* async create(signupInput: SignupInput): Promise<Usuario> {
 
     try {
 
@@ -33,7 +32,7 @@ export class UsuariosService {
       this.HelperServices.handleDbExceptions(error);
     }
 
-  }
+  } */
 
   async findAll(): Promise<Usuario[]> {
     try {
