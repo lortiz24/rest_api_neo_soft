@@ -9,6 +9,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ValorParametroModule } from './valor-parametro/valor-parametro.module';
 import { CommonModule } from './common/common.module';
 import { UsuariosModule } from './usuarios/usuarios.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -52,7 +53,8 @@ import { UsuariosModule } from './usuarios/usuarios.module';
     ParametrosModule,
     ValorParametroModule,
     CommonModule,
-    UsuariosModule
+    UsuariosModule,
+    UsersModule,
   ],
   controllers: [],
   providers: [],

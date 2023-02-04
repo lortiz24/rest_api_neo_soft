@@ -30,12 +30,31 @@ type Usuario {
   isActive: Boolean!
 }
 
+type User {
+  id: ID!
+  username: String!
+  email: String!
+  roles: [String!]!
+  password: String!
+  nombres: String!
+  primer_apellido: String!
+  segundo_apellido: String!
+  tipo_identificacion: String!
+  identificacion: String!
+  genero: String!
+  fecha_nacimiento: String!
+  fecha_registro: String!
+  isActive: Boolean!
+}
+
 type Query {
   getParametros(limit: Int = 10, offset: Int = 0): [Parametro!]!
   getParametro(id: String!): Parametro!
   getValorParametros(limit: Int = 10, offset: Int = 0): [ValorParametro!]!
   getValorParametro(id: ID!): ValorParametro!
   usuarios: [Usuario!]!
+  users: [User!]!
+  user(id: ID!): User!
 }
 
 type Mutation {
@@ -45,7 +64,7 @@ type Mutation {
   createValorParametro(createValorParametroInput: CreateValorParametroInput!, idParametro: String!): ValorParametro!
   updateValorParametro(updateValorParametroInput: UpdateValorParametroInput!): ValorParametro!
   removeValorParametro(id: ID!): ValorParametro!
-  blockUser(id: ID!): Usuario!
+  blockUser(id: ID!): User!
 }
 
 input CreateParametroInput {
