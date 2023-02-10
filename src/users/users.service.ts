@@ -17,8 +17,8 @@ export class UsersService {
     throw new Error('Not implemented');
   }
 
-  update(id: number, updateUserInput: UpdateUserInput) {
-    return `This action updates a #${id} user`;
+  update(id: number, updateUserInput: UpdateUserInput): Promise<User> {
+    throw new Error('not implemented')
   }
 
   block(id: string): Promise<User> {

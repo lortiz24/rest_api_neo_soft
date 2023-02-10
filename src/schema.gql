@@ -13,38 +13,24 @@ type ValorParametro {
   nombre: String!
 }
 
-type Usuario {
-  id: ID!
-  nombres: String!
-  primer_apellido: String!
-  segundo_apellido: String!
-  tipo_identificacion: String!
-  identificacion: String!
-  genero: String!
-  fecha_nacimiento: String!
-  fecha_registro: String!
-  username: String!
-  email: String!
-  roles: [String!]!
-  password: String!
-  isActive: Boolean!
-}
-
 type User {
   id: ID!
   username: String!
   email: String!
   roles: [String!]!
   password: String!
-  nombres: String!
-  primer_apellido: String!
-  segundo_apellido: String!
+  fullname: String!
   tipo_identificacion: String!
   identificacion: String!
   genero: String!
   fecha_nacimiento: String!
   fecha_registro: String!
   isActive: Boolean!
+}
+
+type AuthResponse {
+  token: String!
+  user: User!
 }
 
 type Query {
@@ -52,7 +38,6 @@ type Query {
   getParametro(id: String!): Parametro!
   getValorParametros(limit: Int = 10, offset: Int = 0): [ValorParametro!]!
   getValorParametro(id: ID!): ValorParametro!
-  usuarios: [Usuario!]!
   users: [User!]!
   user(id: ID!): User!
 }
@@ -65,6 +50,7 @@ type Mutation {
   updateValorParametro(updateValorParametroInput: UpdateValorParametroInput!): ValorParametro!
   removeValorParametro(id: ID!): ValorParametro!
   blockUser(id: ID!): User!
+  signup(signupInput: SignupInput!): AuthResponse!
 }
 
 input CreateParametroInput {
@@ -85,4 +71,10 @@ input CreateValorParametroInput {
 input UpdateValorParametroInput {
   nombre: String
   id: ID!
+}
+
+input SignupInput {
+  email: String!
+  fullname: String!
+  password: String!
 }

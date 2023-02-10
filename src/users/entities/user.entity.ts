@@ -30,15 +30,7 @@ export class User {
   password: string;
   @Column('varchar')
   @Field(() => String)
-  nombres: string;
-
-  @Column('varchar')
-  @Field(() => String)
-  primer_apellido: string;
-
-  @Column('varchar')
-  @Field(() => String)
-  segundo_apellido: string;
+  fullname: string;
 
   @Column('varchar')
   @Field(() => String)
