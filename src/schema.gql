@@ -15,11 +15,10 @@ type ValorParametro {
 
 type User {
   id: ID!
-  username: String!
+  fullName: String!
   email: String!
   roles: [String!]!
-  password: String!
-  fullname: String!
+  username: String!
   tipo_identificacion: String!
   identificacion: String!
   genero: String!

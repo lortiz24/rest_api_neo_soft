@@ -8,13 +8,17 @@ export class User {
   @Field(() => ID)
   id: string;
 
-  @Column('varchar')
+  @Column()
   @Field(() => String)
-  username: string;
+  fullName: string;
 
-  @Column('varchar', { unique: true })
+  @Column({ unique: true })
   @Field(() => String)
   email: string;
+
+  @Column()
+  // @Field(() => String)
+  password: string;
 
   @Column({
     type: 'text',
@@ -22,15 +26,16 @@ export class User {
     default: ['user']
   })
   @Field(() => [String])
-  roles: string[]
+  roles: string[];
 
+  @Column({
+    type: 'boolean',
+    default: true
+  })
 
   @Column('varchar')
   @Field(() => String)
-  password: string;
-  @Column('varchar')
-  @Field(() => String)
-  fullname: string;
+  username: string;
 
   @Column('varchar')
   @Field(() => String)
@@ -52,7 +57,7 @@ export class User {
   @Field(() => String)
   fecha_registro: string;
 
-
   @Field(() => Boolean)
-  isActive: boolean
+  isActive: boolean;
+
 }
